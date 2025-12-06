@@ -73,6 +73,9 @@
 
     <!-- Hero Section with Custom Wallpaper -->
     <section class="hero-section-wallpaper">
+        <!-- Invisible Click Area for Sound -->
+        <div class="sound-trigger bottom-left" onclick="playSound()"></div>
+        
         <div class="hero-content-wallpaper">
             <h1 class="main-title">
                 <span class="title-line">New Year's</span>
@@ -94,28 +97,6 @@
     <!-- How to Work Section with Countdown -->
     <section class="how-to-work-section">
         <div class="section-content">
-            <h2 class="section-title">How It Works</h2>
-            
-            <div class="steps-container">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <h3 class="step-title">Sign Up</h3>
-                    <p class="step-description">Create your account and join the exchange</p>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <h3 class="step-title">Get Matched</h3>
-                    <p class="step-description">Receive your Secret Santa assignment</p>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <h3 class="step-title">Exchange Gifts</h3>
-                    <p class="step-description">Surprise your match with a thoughtful gift</p>
-                </div>
-            </div>
-            
             <!-- Countdown Timer -->
             <div class="countdown-container">
                 <h2 class="countdown-title">Countdown to New Year</h2>
@@ -139,6 +120,68 @@
                         <span class="time-value" id="seconds">00</span>
                         <span class="time-label">Seconds</span>
                     </div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">How It Works</h2>
+            
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Kayıt ve Doğrulama</h3>
+                    <p class="step-description">İstanbul Üniversitesi Cerrahpaşa öğrenci mail adresinle (@ogr.iuc.edu.tr) kayıt ol. Mail adresine gönderilen doğrulama kodunu girerek hesabını aktifleştir.</p>
+                    <img src="{% static 'images/resim-1.png' %}" alt="Kayıt ve Doğrulama" class="step-image">
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Profil Oluşturma</h3>
+                    <p class="step-description">İlgi alanlarını ve tercihlerini belirt. Bu bilgiler, eşleştiğin kişinin sana uygun bir hediye seçmesine yardımcı olacak.</p>
+                    <img src="{% static 'images/resim-2.jpg' %}" alt="Profil Oluşturma" class="step-image">
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Otomatik Eşleşme</h3>
+                    <p class="step-description">Sistemimiz seni algoritma ile birisiyle eşleştirecek. Eşleşme sonucunda:</p>
+                    <div class="step-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">✨</span>
+                            <span class="feature-text">Eşleştiğin kişinin ilgi alanlarını ve cinsiyetini göreceksin.</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🔒</span>
+                            <span class="feature-text">Tam isim gizli kalacak. Eşleştiğin kişinin baş harfini ve ortak kodunuzu göreceksin.</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">⏰</span>
+                            <span class="feature-text">Seçtiğin tarih ve saate göre ikinizin de müsait olduğu sürpriz bir saat ve konum göreceksin.</span>
+                        </div>
+                    </div>
+                    <img src="{% static 'images/resim-3.png' %}" alt="Otomatik Eşleşme" class="step-image">
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Hediye ve Teslim</h3>
+                    <p class="step-description">Belirlenen tarih ve lokasyonda buluşup hediyeni teslim et. Bu bir sürpriz olmalı!</p>
+                    <div class="step-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">💰</span>
+                            <div class="feature-content">
+                                <strong class="feature-label">Bütçe</strong>
+                                <span class="feature-text">250-500 TL arası</span>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📦</span>
+                            <div class="feature-content">
+                                <strong class="feature-label">Teslim</strong>
+                                <span class="feature-text">Belirlenen tarih ve lokasyon</span>
+                            </div>
+                        </div>
+                    </div>
+                    <img src="{% static 'images/resim-4.png' %}" alt="Hediye ve Teslim" class="step-image">
                 </div>
             </div>
         </div>
@@ -182,5 +225,15 @@
 
     <!-- JavaScript -->
     <script src="{% static 'js/countdown.js' %}"></script>
+    
+    <script>
+        // Audio element for sound
+        const audio = new Audio("{% static 'sounds/sound1.mp3' %}");
+        
+        function playSound() {
+            audio.currentTime = 0; // Reset to start
+            audio.play();
+        }
+    </script>
 </body>
 </html>
