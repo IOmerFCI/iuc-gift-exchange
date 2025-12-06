@@ -73,9 +73,6 @@
 
     <!-- Hero Section with Custom Wallpaper -->
     <section class="hero-section-wallpaper">
-        <!-- Invisible Click Area for Sound -->
-        <div class="sound-trigger bottom-left" onclick="playSound()"></div>
-        
         <div class="hero-content-wallpaper">
             <h1 class="main-title">
                 <span class="title-line">New Year's</span>
@@ -225,15 +222,5 @@
 
     <!-- JavaScript -->
     <script src="{% static 'js/countdown.js' %}"></script>
-    
-    <script>
-        // Audio element for sound
-        const audio = new Audio("{% static 'sounds/sound1.mp3' %}");
-        
-        function playSound() {
-            audio.currentTime = 0; // Reset to start
-            audio.play();
-        }
-    </script>
 </body>
 </html>

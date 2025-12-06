@@ -198,25 +198,6 @@ body {
     overflow: hidden;
 }
 
-/* Sound Trigger Area */
-.sound-trigger {
-    position: absolute;
-    width: 500px;
-    height: 500px;
-    cursor: pointer;
-    z-index: 5;
-    transition: opacity 0.3s ease;
-}
-
-.sound-trigger:hover {
-    opacity: 0.8;
-}
-
-.sound-trigger.bottom-left {
-    bottom: 2rem;
-    left: 2rem;
-}
-
 .hero-content-wallpaper {
     position: relative;
     z-index: 10;
