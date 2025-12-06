@@ -1,9 +1,13 @@
 import uuid
+import json
+import random
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
 from django.template import TemplateDoesNotExist
+from django.views.decorators.csrf import csrf_exempt
+from django.core.cache import cache
 from .forms import SignUpForm
 from .models import Profile
 
@@ -91,3 +95,86 @@ def preferences(request):
         return render(request, 'landing/preferences.html')
     except TemplateDoesNotExist:
         return HttpResponse('Preferences sayfası (template bulunamadı).')
+
+@csrf_exempt
+def send_verification(request):
+    """
+    POST JSON { "email": "..." } -> oluşturulan 6 haneli kodu cache'e kaydeder.
+    (Gerçek e-posta gönderimi yapılmaz; sadece doğrulama kodu saklanır.)
+    """
+    if request.method != 'POST':
+        return JsonResponse({'message': 'Method not allowed'}, status=405)
+    try:
+        data = json.loads(request.body.decode('utf-8') or '{}')
+    except Exception:
+        data = {}
+    email = (data.get('email') or '').strip().lower()
+    if not email:
+        return JsonResponse({'message': 'email required'}, status=400)
+    code = f"{random.randint(0, 999999):06d}"
+    cache.set(f"verif:{email}", code, timeout=600)  # 10 dakika
+    # debug: kodu dönebiliriz (dev için). Prod: kaldır.
+    return JsonResponse({'sent': True, 'code': code})
+
+@csrf_exempt
+def verify_code(request):
+    """
+    POST JSON { "email": "...", "code": "000000" } -> kod eşleşirse User/Profile oluşturur ve token döner.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'message': 'Method not allowed'}, status=405)
+    try:
+        data = json.loads(request.body.decode('utf-8') or '{}')
+    except Exception:
+        data = {}
+    email = (data.get('email') or '').strip().lower()
+    code = (data.get('code') or '').strip()
+    if not email or not code:
+        return JsonResponse({'message': 'email and code required'}, status=400)
+    cached = cache.get(f"verif:{email}")
+    if not cached or cached != code:
+        return JsonResponse({'message': 'invalid code'}, status=400)
+    # kod doğru -> kullanıcı oluştur (kısıtlama yok)
+    user, created = User.objects.get_or_create(email=email, defaults={'username': email})
+    if created:
+        # şifre yoksa unusable, istenirse daha sonra set edilebilir
+        user.set_unusable_password()
+        user.save()
+    profile, _ = Profile.objects.get_or_create(user=user)
+    # frontend form may have sent phone/name previously; frontend verifies after code;
+    # burada phone/name update logic yapılabilir: frontend can call separate endpoint.
+    token = uuid.uuid4().hex
+    cache.set(f"token:{email}", token, timeout=60*60*24)  # 1 gün
+    cache.delete(f"verif:{email}")
+    return JsonResponse({'token': token, 'created': created, 'email': email, 'user_id': user.id})
+
+def cerrahpasa_login(request):
+    """Render Cerrahpaşa verification login page."""
+    try:
+        return render(request, 'landing/cerrahpasa_login.html')
+    except TemplateDoesNotExist:
+        return HttpResponse('Cerrahpaşa giriş sayfası (template bulunamadı).')
+
+def inspect_user(request):
+    """
+    Debug endpoint: GET ?email=... -> JSON with user and profile if exists.
+    Kullanım: /inspect_user/?email=deneme@... 
+    """
+    email = request.GET.get('email', '').strip().lower()
+    if not email:
+        return JsonResponse({'error': 'email param missing'}, status=400)
+    try:
+        u = User.objects.get(email__iexact=email)
+    except User.DoesNotExist:
+        return JsonResponse({'found': False})
+    profile_data = None
+    try:
+        p = Profile.objects.get(user=u)
+        profile_data = {'phone': p.phone}
+    except Profile.DoesNotExist:
+        profile_data = None
+    return JsonResponse({
+        'found': True,
+        'user': {'id': u.id, 'username': u.username, 'email': u.email, 'fullname': u.first_name},
+        'profile': profile_data
+    })
