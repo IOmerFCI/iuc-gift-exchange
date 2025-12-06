@@ -118,15 +118,3 @@ function checkMilestone() {
 
 // Check milestones every minute
 setInterval(checkMilestone, 60000);
-
-// Add button click handler (placeholder for future functionality)
-document.addEventListener('DOMContentLoaded', function() {
-    const ctaButton = document.querySelector('.cta-button');
-    
-    if (ctaButton) {
-        ctaButton.addEventListener('click', function() {
-            // Placeholder for future functionality
-            alert('🎁 Gift exchange feature coming soon! Stay tuned for the magic of giving.');
-        });
-    }
-});

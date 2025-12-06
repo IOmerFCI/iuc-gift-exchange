@@ -11,7 +11,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
     <style>
+        :root {
+            --primary: #000000;
+            --secondary: #FFFFFF;
+            --accent: #667eea;
+            --accent-hover: #764ba2;
+            --shadow: 8px 8px 0px var(--primary);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -20,145 +31,103 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden;
-        }
-
-        /* Yılbaşı Dekorasyon Elementleri */
-        .snowflake {
-            position: absolute;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.5em;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(-10vh) rotate(0deg);
-            }
-            100% {
-                transform: translateY(110vh) rotate(360deg);
-            }
-        }
-
-        .decoration {
-            position: absolute;
-            font-size: 2em;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .deco-top-left {
-            top: 5%;
-            left: 5%;
-            animation-delay: 0s;
-        }
-
-        .deco-top-right {
-            top: 8%;
-            right: 8%;
-            animation-delay: 1s;
-        }
-
-        .deco-bottom-left {
-            bottom: 10%;
-            left: 8%;
-            animation-delay: 0.5s;
-        }
-
-        .deco-bottom-right {
-            bottom: 12%;
-            right: 5%;
-            animation-delay: 1.5s;
+            overflow-x: hidden;
         }
 
         /* Container */
         .auth-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            background: var(--secondary);
             width: 90%;
-            max-width: 450px;
-            padding: 50px 45px;
+            max-width: 400px;
+            padding: 40px 35px;
             position: relative;
             z-index: 10;
-            border: 3px solid rgba(255, 255, 255, 0.5);
+            border: 3px solid var(--primary);
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: -6px;
+            bottom: -6px;
+            border: 3px solid var(--primary);
+            z-index: -1;
+            border-radius: 12px;
         }
 
         /* Logo ve Başlık */
         .auth-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .auth-logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px;
+            background: var(--accent);
+            border: 3px solid var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            font-size: 35px;
+            box-shadow: 4px 4px 0px var(--primary);
         }
 
         .auth-title {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Poppins', sans-serif;
             font-size: 32px;
             font-weight: 900;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
+            color: var(--primary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: -1px;
         }
 
         .auth-subtitle {
-            color: #666;
+            color: var(--primary);
             font-size: 15px;
-            font-weight: 400;
+            font-weight: 600;
         }
 
         /* Tab Buttons */
         .tab-buttons {
             display: flex;
-            gap: 15px;
-            margin-bottom: 35px;
-            background: #f5f5f5;
-            padding: 6px;
-            border-radius: 15px;
+            gap: 12px;
+            margin-bottom: 28px;
+            border: 3px solid var(--primary);
+            padding: 5px;
         }
 
         .tab-button {
             flex: 1;
-            padding: 12px;
-            border: none;
+            padding: 10px;
+            border: 2px solid transparent;
             background: transparent;
             font-family: 'Poppins', sans-serif;
             font-size: 15px;
-            font-weight: 600;
-            color: #666;
-            border-radius: 12px;
+            font-weight: 700;
+            color: var(--primary);
             cursor: pointer;
             transition: all 0.3s ease;
+            text-transform: uppercase;
         }
 
         .tab-button.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            background: var(--accent);
+            color: var(--secondary);
+            border: 2px solid var(--primary);
+            box-shadow: 4px 4px 0px var(--primary);
+            transform: translate(-2px, -2px);
         }
 
         /* Forms */
@@ -183,149 +152,97 @@
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .form-label {
             display: block;
             margin-bottom: 8px;
-            color: #333;
+            color: var(--primary);
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-input {
             width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
+            padding: 12px 16px;
+            border: 3px solid var(--primary);
             font-family: 'Poppins', sans-serif;
             font-size: 15px;
             transition: all 0.3s ease;
-            background: white;
+            background: var(--secondary);
+            outline: none;
         }
 
         .form-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            box-shadow: 4px 4px 0px var(--primary);
+            transform: translate(-2px, -2px);
         }
 
         .form-input::placeholder {
-            color: #bbb;
+            color: #999;
         }
 
         /* Submit Button */
         .submit-button {
             width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 14px;
+            border: 3px solid var(--primary);
+            background: var(--accent);
+            color: var(--secondary);
             font-family: 'Poppins', sans-serif;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-            margin-top: 10px;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .submit-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+            box-shadow: 4px 4px 0px var(--primary);
+            transform: translate(-2px, -2px);
+            background: var(--accent-hover);
         }
 
         .submit-button:active {
-            transform: translateY(0);
+            transform: translate(0, 0);
+            box-shadow: 2px 2px 0px var(--primary);
         }
 
         /* Forgot Password */
         .forgot-password {
             text-align: right;
-            margin-top: -15px;
-            margin-bottom: 20px;
+            margin-top: -12px;
+            margin-bottom: 16px;
         }
 
         .forgot-password a {
-            color: #667eea;
-            text-decoration: none;
+            color: var(--primary);
+            text-decoration: underline;
             font-size: 13px;
-            font-weight: 600;
-            transition: color 0.3s ease;
+            font-weight: 700;
+            transition: all 0.3s ease;
         }
 
         .forgot-password a:hover {
-            color: #764ba2;
-        }
-
-        /* Divider */
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 30px 0;
-            color: #999;
-            font-size: 13px;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e0e0e0;
-        }
-
-        .divider::before {
-            margin-right: 15px;
-        }
-
-        .divider::after {
-            margin-left: 15px;
-        }
-
-        /* Social Buttons */
-        .social-buttons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-button {
-            flex: 1;
-            padding: 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .social-button:hover {
-            border-color: #667eea;
-            background: #f8f9ff;
-            transform: translateY(-2px);
+            text-decoration-thickness: 2px;
         }
 
         /* Back to Home */
         .back-home {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 25px;
         }
 
         .back-home a {
-            color: #667eea;
-            text-decoration: none;
+            color: var(--primary);
+            text-decoration: underline;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             display: inline-flex;
             align-items: center;
             gap: 5px;
@@ -333,7 +250,7 @@
         }
 
         .back-home a:hover {
-            color: #764ba2;
+            text-decoration-thickness: 2px;
             gap: 8px;
         }
 
@@ -341,36 +258,29 @@
         @media (max-width: 768px) {
             .auth-container {
                 width: 95%;
-                padding: 40px 30px;
+                padding: 35px 25px;
             }
 
             .auth-title {
                 font-size: 28px;
             }
-
-            .decoration {
-                font-size: 1.5em;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Yılbaşı Dekorasyonları -->
-    <div class="decoration deco-top-left">🎄</div>
-    <div class="decoration deco-top-right">⭐</div>
-    <div class="decoration deco-bottom-left">🎁</div>
-    <div class="decoration deco-bottom-right">🎅</div>
-
-    <!-- Kar Taneleri -->
-    <div class="snowflake" style="left: 10%; animation-duration: 10s;">❄</div>
-    <div class="snowflake" style="left: 20%; animation-duration: 12s; animation-delay: 2s;">❄</div>
-    <div class="snowflake" style="left: 30%; animation-duration: 15s; animation-delay: 4s;">❄</div>
-    <div class="snowflake" style="left: 40%; animation-duration: 11s; animation-delay: 1s;">❄</div>
-    <div class="snowflake" style="left: 50%; animation-duration: 14s; animation-delay: 3s;">❄</div>
-    <div class="snowflake" style="left: 60%; animation-duration: 13s; animation-delay: 5s;">❄</div>
-    <div class="snowflake" style="left: 70%; animation-duration: 12s; animation-delay: 2s;">❄</div>
-    <div class="snowflake" style="left: 80%; animation-duration: 10s; animation-delay: 4s;">❄</div>
-    <div class="snowflake" style="left: 90%; animation-duration: 15s; animation-delay: 1s;">❄</div>
+    <!-- Snowflakes Animation (aynı ana sayfadaki gibi) -->
+    <div class="snowflakes" aria-hidden="true">
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+    </div>
 
     <!-- Auth Container -->
     <div class="auth-container">
@@ -404,19 +314,6 @@
                 </div>
                 <button type="submit" class="submit-button">Giriş Yap 🎉</button>
             </form>
-
-            <div class="divider">veya</div>
-
-            <div class="social-buttons">
-                <button class="social-button">
-                    <span>G</span>
-                    Google
-                </button>
-                <button class="social-button">
-                    <span>f</span>
-                    Facebook
-                </button>
-            </div>
         </div>
 
         <!-- Signup Form -->
@@ -441,19 +338,6 @@
                 </div>
                 <button type="submit" class="submit-button">Kayıt Ol 🎁</button>
             </form>
-
-            <div class="divider">veya</div>
-
-            <div class="social-buttons">
-                <button class="social-button">
-                    <span>G</span>
-                    Google
-                </button>
-                <button class="social-button">
-                    <span>f</span>
-                    Facebook
-                </button>
-            </div>
         </div>
 
         <!-- Back to Home -->
