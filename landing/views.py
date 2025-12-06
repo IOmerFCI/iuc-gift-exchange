@@ -9,3 +9,8 @@ def home(request):
 def auth(request):
     """Render the authentication (login/signup) page."""
     return render(request, 'landing/auth.html')
+
+
+def preferences(request):
+    """Render the user preferences page."""
+    return render(request, 'landing/preferences.html')

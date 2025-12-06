@@ -1,0 +1,786 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İÜC Hediyeleşme - Tercihlerim</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎁</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --red-primary: #C41E3A;
+            --red-dark: #8B0000;
+            --green-primary: #0F5132;
+            --gold: #FFD700;
+            --white: #FFFFFF;
+            --cream: #FFF8DC;
+            --dark: #1a1a1a;
+            --gradient-festive: linear-gradient(135deg, #C41E3A 0%, #0F5132 50%, #8B0000 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--gradient-festive);
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--white);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold) 0%, #FFF4B5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            font-size: 1.1rem;
+            color: var(--cream);
+            font-weight: 300;
+        }
+
+        /* Content Card */
+        .content-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 4px solid var(--dark);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 12px 12px 0px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--red-primary);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 3px solid var(--red-primary);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Preferences Grid */
+        .preferences-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .preference-item {
+            background: var(--white);
+            border: 3px solid var(--dark);
+            border-radius: 12px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .preference-item:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 6px 6px 0px var(--dark);
+        }
+
+        .preference-item.selected {
+            background: var(--red-primary);
+            border-color: var(--dark);
+            box-shadow: 6px 6px 0px var(--dark);
+            transform: translate(-3px, -3px);
+        }
+
+        .preference-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--dark);
+            border-radius: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .preference-item.selected .preference-checkbox {
+            background: var(--gold);
+            border-color: var(--dark);
+        }
+
+        .preference-checkbox::after {
+            content: '✓';
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--dark);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .preference-item.selected .preference-checkbox::after {
+            opacity: 1;
+        }
+
+        .preference-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+            flex: 1;
+        }
+
+        .preference-item.selected .preference-label {
+            color: var(--white);
+        }
+
+        .preference-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Expandable Items */
+        .preference-item.expandable {
+            position: relative;
+        }
+
+        .expand-icon {
+            margin-left: auto;
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .preference-item.expandable.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Subcategories */
+        .subcategories {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(196, 30, 58, 0.1);
+            border: 3px solid var(--red-primary);
+            border-radius: 12px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 2000px;
+            }
+        }
+
+        .subcategory-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--red-primary);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .preference-item.sub-item {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--dark);
+        }
+
+        .preference-item.sub-item:hover {
+            box-shadow: 4px 4px 0px var(--dark);
+        }
+
+        .preference-item.sub-item.selected {
+            background: var(--gold);
+            border-color: var(--dark);
+            box-shadow: 4px 4px 0px var(--dark);
+        }
+
+        .preference-item.sub-item .preference-label {
+            font-size: 0.95rem;
+        }
+
+        /* Text Input */
+        .text-input-section {
+            margin-bottom: 2rem;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            border: 3px solid var(--dark);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus {
+            box-shadow: 4px 4px 0px var(--dark);
+            transform: translate(-2px, -2px);
+        }
+
+        /* Submit Button */
+        .submit-button {
+            width: 100%;
+            padding: 1.25rem;
+            background: var(--red-primary);
+            color: var(--white);
+            border: 3px solid var(--dark);
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 6px 6px 0px var(--dark);
+        }
+
+        .submit-button:hover {
+            background: var(--red-dark);
+            transform: translate(-3px, -3px);
+            box-shadow: 9px 9px 0px var(--dark);
+        }
+
+        .submit-button:active {
+            transform: translate(0, 0);
+            box-shadow: 3px 3px 0px var(--dark);
+        }
+
+        /* Logout Link */
+        .logout-link {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .logout-link a {
+            color: var(--white);
+            text-decoration: underline;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-link a:hover {
+            color: var(--gold);
+            text-decoration-thickness: 2px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .content-card {
+                padding: 1.5rem;
+            }
+
+            .preferences-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <span class="header-icon">🎁</span>
+            <h1 class="header-title">Tercihlerim</h1>
+            <p class="header-subtitle">Sevdiğin şeyleri seç, arkadaşların sana mükemmel hediye bulsun!</p>
+        </div>
+
+        <!-- Preferences Form -->
+        <form method="POST" action="#">
+            {% csrf_token %}
+            
+            <div class="content-card">
+                <h2 class="section-title">🎨 Hobilerim</h2>
+                <div class="preferences-grid">
+                    <div class="preference-item" onclick="togglePreference(this, 'new_tastes')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🍽️</span>
+                        <span class="preference-label">Yeni Tatlar</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'travel')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">✈️</span>
+                        <span class="preference-label">Seyahat</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'social_media')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">📱</span>
+                        <span class="preference-label">Sosyal Medya / Trendler</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'photography')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">📷</span>
+                        <span class="preference-label">Fotoğrafçılık</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'books')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">📚</span>
+                        <span class="preference-label">Kitap</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'video_games')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🎮</span>
+                        <span class="preference-label">Video Oyunları (Genel)</span>
+                    </div>
+                    <div class="preference-item expandable" onclick="toggleExpandable(this, 'cinema')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🎬</span>
+                        <span class="preference-label">Sinema / Film</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="preference-item expandable" onclick="toggleExpandable(this, 'music')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🎵</span>
+                        <span class="preference-label">Müzik</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="preference-item expandable" onclick="toggleExpandable(this, 'sports')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">⚽</span>
+                        <span class="preference-label">Spor</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'entrepreneurship')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">💡</span>
+                        <span class="preference-label">Girişimcilik / Start-up</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'language_learning')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🌍</span>
+                        <span class="preference-label">Yabancı Dil Öğrenimi</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'tabletop_rpg')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🎲</span>
+                        <span class="preference-label">Masaüstü RYO (D&D)</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'crypto')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">₿</span>
+                        <span class="preference-label">Kripto / Blockchain</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'cosplay')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🎭</span>
+                        <span class="preference-label">Cosplay / Anime</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'instrument')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🎸</span>
+                        <span class="preference-label">Enstrüman Çalmak</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'chess')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">♟️</span>
+                        <span class="preference-label">Satranç / Go</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'coffee')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">☕</span>
+                        <span class="preference-label">Kahve Kültürü</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'astrology')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">⭐</span>
+                        <span class="preference-label">Astroloji / Burçlar</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'popular_science')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🔬</span>
+                        <span class="preference-label">Popüler Bilim</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'museums')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🏛️</span>
+                        <span class="preference-label">Müze / Sergi Gezmek</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'botany')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🌿</span>
+                        <span class="preference-label">Botanik</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'diy')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🔧</span>
+                        <span class="preference-label">Kendin Yap (DIY) / Tamirat</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'philosophy')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🧠</span>
+                        <span class="preference-label">Felsefe / Psikoloji</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'formula1')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🏎️</span>
+                        <span class="preference-label">Formula 1 / Motorsporları</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'ceramics')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🏺</span>
+                        <span class="preference-label">Seramik / Çömlekçilik</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'history')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">📜</span>
+                        <span class="preference-label">Tarih Araştırmaları</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'dancing')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">💃</span>
+                        <span class="preference-label">Latin / Salon Dansları</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'collecting')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🎫</span>
+                        <span class="preference-label">Koleksiyonerlik</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'theater')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🎭</span>
+                        <span class="preference-label">Tiyatro</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'maker')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🖨️</span>
+                        <span class="preference-label">Maker / 3D Yazıcılar</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'astronomy')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🔭</span>
+                        <span class="preference-label">Astronomi / Teleskop</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'concerts')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🎤</span>
+                        <span class="preference-label">Konser</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'cooking')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🍳</span>
+                        <span class="preference-label">Yemek Pişirmek</span>
+                    </div>
+                    <div class="preference-item" onclick="togglePreference(this, 'drawing')">
+                        <div class="preference-checkbox"></div>
+                        <span class="preference-icon">🎨</span>
+                        <span class="preference-label">Resim Çizmek</span>
+                    </div>
+                </div>
+                
+                <!-- Cinema Sub-categories -->
+                <div class="subcategories" id="cinema-sub" style="display: none;">
+                    <h3 class="subcategory-title">Film Türleri</h3>
+                    <div class="preferences-grid">
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_action')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Aksiyon</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_adventure')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Macera</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_scifi')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Bilim Kurgu</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_fantasy')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Fantastik</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_horror')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Korku / Gerilim</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_drama')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Dram</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_romance')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Romantik</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_comedy')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Komedi</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_crime')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Suç</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_animation')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Animasyon</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_documentary')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Belgesel</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_history')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Tarih</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_musical')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Müzikal</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'cinema_biography')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Biyografi</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Music Sub-categories -->
+                <div class="subcategories" id="music-sub" style="display: none;">
+                    <h3 class="subcategory-title">Müzik Türleri</h3>
+                    <div class="preferences-grid">
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'music_classical')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Klasik Müzik</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'music_jazz')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Jazz</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'music_blues')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Bluz</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'music_rock')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Rock</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'music_metal')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Metal</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'music_pop')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Pop</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'music_electronic')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Elektronik Müzik</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'music_hiphop')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Rap/Hip-Hop</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'music_popularrap')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Popüler Rap</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'music_kpop')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">K-Pop</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sports Sub-categories -->
+                <div class="subcategories" id="sports-sub" style="display: none;">
+                    <h3 class="subcategory-title">Spor Dalları</h3>
+                    <div class="preferences-grid">
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_basketball')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Basketbol</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_volleyball')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Voleybol</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_football')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Futbol</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_combat')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Dövüş Sporları</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_swimming')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Yüzmek</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_athletics')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Atletizm</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_tennis')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Masa Tenisi / Tenis</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_bodybuilding')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Vücut Geliştirme</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_hiking')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Doğa Yürüyüşü / Kamp</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_climbing')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Dağcılık</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_skating')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Paten</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_skateboard')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Kaykay</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_archery')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Okçuluk</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_trekking')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Trekking</span>
+                        </div>
+                        <div class="preference-item sub-item" onclick="togglePreference(this, 'sports_skiing')">
+                            <div class="preference-checkbox"></div>
+                            <span class="preference-label">Kayak</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h2 class="section-title">💭 Ek Notlar</h2>
+                <div class="text-input-section">
+                    <textarea 
+                        name="additional_notes" 
+                        class="text-input" 
+                        placeholder="Sevdiğin renkler, markalar veya özel isteklerin varsa buraya yazabilirsin..."
+                    ></textarea>
+                </div>
+                
+                <button type="submit" class="submit-button">
+                    Tercihlerimi Kaydet 🎉
+                </button>
+            </div>
+        </form>
+
+        <!-- Logout -->
+        <div class="logout-link">
+            <a href="{% url 'home' %}">← Ana Sayfaya Dön</a>
+        </div>
+    </div>
+
+    <script>
+        // Hidden inputs to store selected preferences
+        const selectedPreferences = new Set();
+
+        function togglePreference(element, value) {
+            element.classList.toggle('selected');
+            
+            if (selectedPreferences.has(value)) {
+                selectedPreferences.delete(value);
+            } else {
+                selectedPreferences.add(value);
+            }
+            
+            // Update or create hidden input
+            updateHiddenInput();
+        }
+
+        function toggleExpandable(element, category) {
+            event.stopPropagation();
+            
+            // Toggle the expandable item itself
+            element.classList.toggle('expanded');
+            
+            // Toggle subcategories visibility
+            const subCategoriesDiv = document.getElementById(category + '-sub');
+            if (subCategoriesDiv.style.display === 'none' || subCategoriesDiv.style.display === '') {
+                subCategoriesDiv.style.display = 'block';
+            } else {
+                subCategoriesDiv.style.display = 'none';
+            }
+        }
+
+        function updateHiddenInput() {
+            // Remove existing hidden input if any
+            const existingInput = document.querySelector('input[name="preferences"]');
+            if (existingInput) {
+                existingInput.remove();
+            }
+            
+            // Create new hidden input with all selected preferences
+            const form = document.querySelector('form');
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'preferences';
+            input.value = Array.from(selectedPreferences).join(',');
+            form.appendChild(input);
+        }
+    </script>
+</body>
+</html>
