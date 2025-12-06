@@ -1,0 +1,486 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap / Kayıt Ol - New Year's Gift Exchange</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Yılbaşı Dekorasyon Elementleri */
+        .snowflake {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.5em;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        .decoration {
+            position: absolute;
+            font-size: 2em;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .deco-top-left {
+            top: 5%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .deco-top-right {
+            top: 8%;
+            right: 8%;
+            animation-delay: 1s;
+        }
+
+        .deco-bottom-left {
+            bottom: 10%;
+            left: 8%;
+            animation-delay: 0.5s;
+        }
+
+        .deco-bottom-right {
+            bottom: 12%;
+            right: 5%;
+            animation-delay: 1.5s;
+        }
+
+        /* Container */
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 450px;
+            padding: 50px 45px;
+            position: relative;
+            z-index: 10;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Logo ve Başlık */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .auth-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .auth-subtitle {
+            color: #666;
+            font-size: 15px;
+            font-weight: 400;
+        }
+
+        /* Tab Buttons */
+        .tab-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 35px;
+            background: #f5f5f5;
+            padding: 6px;
+            border-radius: 15px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: #666;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Forms */
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #bbb;
+        }
+
+        /* Submit Button */
+        .submit-button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            margin-top: 10px;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        /* Forgot Password */
+        .forgot-password {
+            text-align: right;
+            margin-top: -15px;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #764ba2;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider::before {
+            margin-right: 15px;
+        }
+
+        .divider::after {
+            margin-left: 15px;
+        }
+
+        /* Social Buttons */
+        .social-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-button {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .social-button:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateY(-2px);
+        }
+
+        /* Back to Home */
+        .back-home {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-home a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .back-home a:hover {
+            color: #764ba2;
+            gap: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .auth-container {
+                width: 95%;
+                padding: 40px 30px;
+            }
+
+            .auth-title {
+                font-size: 28px;
+            }
+
+            .decoration {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Yılbaşı Dekorasyonları -->
+    <div class="decoration deco-top-left">🎄</div>
+    <div class="decoration deco-top-right">⭐</div>
+    <div class="decoration deco-bottom-left">🎁</div>
+    <div class="decoration deco-bottom-right">🎅</div>
+
+    <!-- Kar Taneleri -->
+    <div class="snowflake" style="left: 10%; animation-duration: 10s;">❄</div>
+    <div class="snowflake" style="left: 20%; animation-duration: 12s; animation-delay: 2s;">❄</div>
+    <div class="snowflake" style="left: 30%; animation-duration: 15s; animation-delay: 4s;">❄</div>
+    <div class="snowflake" style="left: 40%; animation-duration: 11s; animation-delay: 1s;">❄</div>
+    <div class="snowflake" style="left: 50%; animation-duration: 14s; animation-delay: 3s;">❄</div>
+    <div class="snowflake" style="left: 60%; animation-duration: 13s; animation-delay: 5s;">❄</div>
+    <div class="snowflake" style="left: 70%; animation-duration: 12s; animation-delay: 2s;">❄</div>
+    <div class="snowflake" style="left: 80%; animation-duration: 10s; animation-delay: 4s;">❄</div>
+    <div class="snowflake" style="left: 90%; animation-duration: 15s; animation-delay: 1s;">❄</div>
+
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <!-- Header -->
+        <div class="auth-header">
+            <div class="auth-logo">🎁</div>
+            <h1 class="auth-title">Hoş Geldiniz!</h1>
+            <p class="auth-subtitle">Yeni yıl hediye değişimine katılın</p>
+        </div>
+
+        <!-- Tab Buttons -->
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="switchTab('login')">Giriş Yap</button>
+            <button class="tab-button" onclick="switchTab('signup')">Kayıt Ol</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form" class="form-container active">
+            <form method="POST" action="#">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="form-label">E-posta</label>
+                    <input type="email" name="email" class="form-input" placeholder="ornek@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Şifre</label>
+                    <input type="password" name="password" class="form-input" placeholder="••••••••" required>
+                </div>
+                <div class="forgot-password">
+                    <a href="#">Şifremi Unuttum?</a>
+                </div>
+                <button type="submit" class="submit-button">Giriş Yap 🎉</button>
+            </form>
+
+            <div class="divider">veya</div>
+
+            <div class="social-buttons">
+                <button class="social-button">
+                    <span>G</span>
+                    Google
+                </button>
+                <button class="social-button">
+                    <span>f</span>
+                    Facebook
+                </button>
+            </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signup-form" class="form-container">
+            <form method="POST" action="#">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="form-label">Ad Soyad</label>
+                    <input type="text" name="fullname" class="form-input" placeholder="Ahmet Yılmaz" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">E-posta</label>
+                    <input type="email" name="email" class="form-input" placeholder="ornek@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Şifre</label>
+                    <input type="password" name="password" class="form-input" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Şifre Tekrar</label>
+                    <input type="password" name="password_confirm" class="form-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="submit-button">Kayıt Ol 🎁</button>
+            </form>
+
+            <div class="divider">veya</div>
+
+            <div class="social-buttons">
+                <button class="social-button">
+                    <span>G</span>
+                    Google
+                </button>
+                <button class="social-button">
+                    <span>f</span>
+                    Facebook
+                </button>
+            </div>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="back-home">
+            <a href="{% url 'home' %}">
+                ← Ana Sayfaya Dön
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // Tab buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Forms
+            const forms = document.querySelectorAll('.form-container');
+            forms.forEach(form => form.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.getElementById('login-form').classList.add('active');
+            } else {
+                document.getElementById('signup-form').classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

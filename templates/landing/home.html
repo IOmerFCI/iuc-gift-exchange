@@ -71,10 +71,12 @@
             </div>
             
             <!-- CTA Button -->
-            <button class="cta-button">
-                <span class="button-text">Start Your Exchange</span>
-                <span class="button-icon">🎉</span>
-            </button>
+            <a href="{% url 'auth' %}" style="text-decoration: none;">
+                <button class="cta-button">
+                    <span class="button-text">Start Your Exchange</span>
+                    <span class="button-icon">🎉</span>
+                </button>
+            </a>
         </div>
         
         <!-- Decorative Elements -->
@@ -99,7 +101,7 @@
         <div class="footer-content">
             <!-- University Branding -->
             <div class="university-section">
-                <img src="https://cerrahpasa.istanbul.edu.tr/wp-content/uploads/2021/09/cropped-logo-iuc.png" alt="İstanbul Üniversitesi Cerrahpaşa Logo" class="university-logo">
+                <img src="{% static 'images/iuc-logo.png' %}" alt="İstanbul Üniversitesi Cerrahpaşa Logo" class="university-logo">
                 <p class="university-name">İstanbul Üniversitesi - Cerrahpaşa</p>
                 <p class="university-department">Bilgisayar Mühendisliği Bölümü</p>
             </div>
