@@ -85,7 +85,9 @@ def auth(request):
 def home(request):
     """Ana sayfa: landing/home.html render eder; template yoksa düz metin döner."""
     try:
-        return render(request, 'landing/home.html')
+        # Kayıtlı kullanıcı sayısını hesapla
+        user_count = User.objects.count()
+        return render(request, 'landing/home.html', {'user_count': user_count})
     except TemplateDoesNotExist:
         return HttpResponse('Ana sayfa (template bulunamadı).')
 

@@ -86,6 +86,15 @@ DATABASES = {
     }
 }
 
+# Allow using SQLite for local development when environment variable USE_SQLITE=1 is set.
+if os.environ.get('USE_SQLITE') == '1':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
 
 
 # Password validation

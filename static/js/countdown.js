@@ -1,6 +1,6 @@
 /**
- * New Year's Countdown Timer
- * Calculates and displays time remaining until January 1st
+ * Registration Deadline Countdown Timer
+ * Calculates and displays time remaining until December 19, 2025
  */
 
 // Function to calculate time remaining
@@ -8,20 +8,15 @@ function updateCountdown() {
     // Get current date
     const now = new Date();
     
-    // Determine target New Year date
-    const currentYear = now.getFullYear();
-    let targetYear = currentYear + 1;
-    
-    // If we're already past January 1st of current year, target next year
-    // If we're before January 1st of current year, target current year
-    const newYear = new Date(targetYear, 0, 1, 0, 0, 0);
+    // Target date: December 19, 2025 at 23:59:59
+    const targetDate = new Date(2025, 11, 19, 23, 59, 59); // Month is 0-indexed, so 11 = December
     
     // Calculate time difference in milliseconds
-    const timeDifference = newYear - now;
+    const timeDifference = targetDate - now;
     
     // Check if countdown is complete
     if (timeDifference <= 0) {
-        displayHappyNewYear();
+        displayDeadlineReached();
         return;
     }
     
@@ -43,13 +38,13 @@ function padZero(num) {
     return num.toString().padStart(2, '0');
 }
 
-// Function to display Happy New Year message
-function displayHappyNewYear() {
+// Function to display deadline reached message
+function displayDeadlineReached() {
     const countdownTitle = document.querySelector('.countdown-title');
     const countdownTimer = document.querySelector('.countdown-timer');
     
     if (countdownTitle) {
-        countdownTitle.textContent = '🎉 Happy New Year! 🎉';
+        countdownTitle.textContent = '⏰ Kayıt Süresi Doldu';
         countdownTitle.style.fontSize = 'clamp(2rem, 5vw, 3rem)';
         countdownTitle.style.animation = 'pulseGlow 1s ease-in-out infinite';
     }
@@ -57,9 +52,9 @@ function displayHappyNewYear() {
     if (countdownTimer) {
         countdownTimer.innerHTML = `
             <div style="text-align: center; width: 100%;">
-                <div style="font-size: clamp(3rem, 8vw, 5rem); margin-bottom: 1rem;">🎊</div>
+                <div style="font-size: clamp(3rem, 8vw, 5rem); margin-bottom: 1rem;">🚫</div>
                 <div style="font-size: clamp(1.5rem, 4vw, 2rem); color: var(--gold);">
-                    Welcome to ${new Date().getFullYear()}!
+                    Kayıt süresi 19 Aralık 2025'te sona erdi.
                 </div>
             </div>
         `;
@@ -99,22 +94,3 @@ if (document.readyState === 'loading') {
 } else {
     initCountdown();
 }
-
-// Optional: Add celebration effects when reaching specific milestones
-function checkMilestone() {
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const newYear = new Date(currentYear + 1, 0, 1, 0, 0, 0);
-    const timeDifference = newYear - now;
-    const hoursRemaining = timeDifference / (1000 * 60 * 60);
-    
-    // Trigger special effects for milestones
-    if (hoursRemaining <= 24 && hoursRemaining > 23.99) {
-        console.log('🎉 Less than 24 hours to New Year!');
-    } else if (hoursRemaining <= 1 && hoursRemaining > 0.99) {
-        console.log('🎊 Final hour approaching!');
-    }
-}
-
-// Check milestones every minute
-setInterval(checkMilestone, 60000);
