@@ -2,15 +2,14 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # 1. ANASAYFA (127.0.0.1:8000 buraya gelecek)
-    # views.home veya views.index diye bir fonksiyonun olduğunu varsayıyorum
-    path('', views.home_view, name='home'), 
-
-    # 2. KAYIT EKRANI (Artık burası özel bir linkte duracak)
-    path('kayit-ol/', views.register_view, name='register'),
-
-    # 3. GİRİŞ EKRANI (Varsa)
-    path('giris-yap/', views.login_view, name='login'),
-
+    # Sayfalar
+    path('', views.home_view, name='home'),
+    path('auth/', views.auth_page_view, name='auth_page'), 
     path('tercihler/', views.preferences_view, name='preferences'),
+
+    # API Endpoints
+    path('api/auth/resend-code', views.api_resend_code, name='api_resend'),
+    path('api/auth/send-verification', views.api_register, name='api_register'),
+    path('api/auth/verify-code', views.api_verify_code, name='api_verify'),
+    path('api/auth/login', views.api_login, name='api_login'),
 ]

@@ -57,9 +57,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'gift_exchange.wsgi.application'
 
-# --------------------------
-# 🔥 DATABASE CONFIG (Render)
-# --------------------------
 
 DATABASES = {
     'default': dj_database_url.config(
