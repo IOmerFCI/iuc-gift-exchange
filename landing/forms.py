@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 class StudentRegistrationForm(forms.ModelForm):
-    # Şifre alanlarını manuel ekliyoruz çünkü Model'de ham şifre tutulmaz
-    password = forms.CharField(widget=forms.PasswordInput, label="Şifre" , maxlength="50")
-    confirm_password = forms.CharField(widget=forms.PasswordInput, label="Şifre Tekrar" , maxlength="50")
-    full_name = forms.CharField(label="Ad Soyad", help_text="Örn: Ömer Faruk Coşkun" , maxlength="50")
+    # Şifre alanlarına belli bir sınır ekledik.Güvenlik açısından iyi bir geliştirme
+    password = forms.CharField(widget=forms.PasswordInput, label="Şifre" , max_length=50)
+    confirm_password = forms.CharField(widget=forms.PasswordInput, label="Şifre Tekrar" , max_length=50)
+    full_name = forms.CharField(label="Ad Soyad", help_text="Örn: Ömer Faruk Coşkun" , max_length=50)
     phone = forms.CharField(label="Telefon", max_length=15)
 
     class Meta:
