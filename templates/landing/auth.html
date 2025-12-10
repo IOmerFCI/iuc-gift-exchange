@@ -271,7 +271,7 @@
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max_-width: 768px) {
             .auth-container {
                 width: 95%;
                 padding: 35px 25px;
@@ -281,6 +281,92 @@
                 font-size: 28px;
             }
         }
+
+
+        .django-messages {
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            padding: 12px;
+            border: 3px solid var(--primary);
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+        }
+        
+        .alert-error, .alert-danger {
+            background-color: #ffe6e6;
+            color: #cc0000;
+            border-color: #cc0000;
+        }
+        
+        .alert-success {
+            background-color: #e6ffe6;
+            color: #006600;
+            border-color: #006600;
+        }
+
+        /* Input Validasyon Stilleri */
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 5px; /* Hata mesajı için yer */
+        }
+
+        .form-input.input-error {
+            border-color: var(--error);
+            background-color: #fff0f0;
+            animation: shake 0.3s ease-in-out;
+        }
+
+        .validation-feedback {
+            font-size: 11px;
+            font-weight: 600;
+            height: 18px; /* Zıplamayı önlemek için sabit yükseklik */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 0 2px;
+        }
+
+        .char-count {
+            color: #666;
+            font-family: monospace;
+        }
+
+        .error-text {
+            color: var(--error);
+            display: none; /* JS ile açılacak */
+        }
+
+        .error-text.visible {
+            display: block;
+        }
+
+        /* Titreme Animasyonu (Kullanıcı yanlış yapınca dikkat çekmek için) */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Diğer stiller (Container, Buttons vs) aynı kalıyor */
+        .auth-container {
+            background: var(--secondary);
+            width: 90%;
+            max_-width: 400px;
+            padding: 40px 35px;
+            border: 3px solid var(--primary);
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+        }
+
     </style>
 </head>
 <body>
@@ -370,33 +456,60 @@
         <div class="snowflake">❆</div>
     </div>
 
-    <!-- Auth Container -->
-    <div class="auth-container">
-        <!-- Header -->
+<div class="auth-container">
         <div class="auth-header">
             <div class="auth-logo">🎁</div>
             <h1 class="auth-title">Hoş Geldiniz!</h1>
             <p class="auth-subtitle">Yeni yıl hediye değişimine katılın</p>
         </div>
 
-        <!-- Tab Buttons -->
-        <div class="tab-buttons">
-            <button class="tab-button active" onclick="switchTab('login')">Giriş Yap</button>
-            <button class="tab-button" onclick="switchTab('signup')">Kayıt Ol</button>
-        </div>
+        {% if messages %}
+            <div class="django-messages" style="margin-bottom: 20px;">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
-        <!-- Login Form -->
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="switchTab('login', event)">Giriş Yap</button>
+            <button class="tab-button" onclick="switchTab('signup', event)">Kayıt Ol</button>
+        </div>
+        
         <div id="login-form" class="form-container active">
             <form method="POST" action="{% url 'login' %}">
                 {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="alert alert-error">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
                 <div class="form-group">
                     <label class="form-label">E-posta</label>
-                    <input type="email" name="email" class="form-input" placeholder="ornek@ogr.iuc.edu.tr" max_length=50 required>
+                    <div class="input-wrapper">
+                        <input type="email" name="username" class="form-input validate-input" placeholder="ornek@ogr.iuc.edu.tr" maxlength = 50 required>
+                    </div>
+                    <div class="validation-feedback">
+                        <span class="error-text">Maksimum sınıra ulaştınız!</span>
+                        <span class="char-count">0/50</span>
+                    </div>
                 </div>
+
                 <div class="form-group">
                     <label class="form-label">Şifre</label>
-                    <input type="password" name="password" class="form-input" placeholder="••••••••" max_length=50 required>
+                    <div class="input-wrapper">
+                        <input type="password" name="password" class="form-input validate-input" placeholder="••••••••" maxlength = 50 required>
+                    </div>
+                    <div class="validation-feedback">
+                        <span class="error-text">Maksimum sınıra ulaştınız!</span>
+                        <span class="char-count">0/50</span>
+                    </div>
                 </div>
+
                 <div class="forgot-password">
                     <a href="#">Şifremi Unuttum?</a>
                 </div>
@@ -404,42 +517,76 @@
             </form>
         </div>
 
-        <!-- Signup Form -->
         <div id="signup-form" class="form-container">
-            <form method="POST" action="">
+            <form method="POST" action="{% url 'register' %}">
                 {% csrf_token %}
+                
                 <div class="form-group">
                     <label class="form-label">Ad Soyad</label>
-                    <input type="text" name="full_name" class="form-input" placeholder="Ahmet Yılmaz" max_length = 50 required>
+                    <div class="input-wrapper">
+                        <input type="text" name="full_name" class="form-input validate-input" placeholder="Ahmet Yılmaz" maxlength = 50 required>
+                    </div>
+                    <div class="validation-feedback">
+                        <span class="error-text">Maksimum sınıra ulaştınız!</span>
+                        <span class="char-count">0/50</span>
+                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Okul E-postası</label> <input type="email" 
-                           name="email" 
-                           class="form-input"  
-                           placeholder="ogrenci@ogr.iuc.edu.tr" 
-                           max_length = 50
-                           required 
-                           pattern=".+@ogr\.iuc\.edu\.tr"
-                           title="Lütfen @ogr.iuc.edu.tr uzantılı mail adresinizi girin.">
+                    <label class="form-label">Okul E-postası</label> 
+                    <div class="input-wrapper">
+                        <input type="email" 
+                            name="email" 
+                            class="form-input validate-input"  
+                            placeholder="ogrenci@ogr.iuc.edu.tr" 
+                            maxlength = 50
+                            required 
+                            pattern=".+@ogr\.iuc\.edu\.tr"
+                            title="Lütfen @ogr.iuc.edu.tr uzantılı mail adresinizi girin.">
+                    </div>
+                    <div class="validation-feedback">
+                        <span class="error-text">Maksimum sınıra ulaştınız!</span>
+                        <span class="char-count">0/50</span>
+                    </div>
                 </div>
+
                 <div class="form-group">
                     <label class="form-label">Telefon</label>
-                    <input type="tel" name="phone" class="form-input" placeholder="05XX XXX XX XX" max_length = 15 required>
+                    <div class="input-wrapper">
+                        <input type="tel" name="phone" class="form-input validate-input" placeholder="05XX XXX XX XX" maxlength = 15 required>
+                    </div>
+                    <div class="validation-feedback">
+                        <span class="error-text">Maksimum sınıra ulaştınız!</span>
+                        <span class="char-count">0/15</span>
+                    </div>
                 </div>
+
                 <div class="form-group">
                     <label class="form-label">Şifre</label>
-                    <input type="password" name="password" class="form-input" placeholder="••••••••" max_length = 50 required>
+                    <div class="input-wrapper">
+                        <input type="password" name="password" class="form-input validate-input" placeholder="••••••••" maxlength = 50 required>
+                    </div>
+                    <div class="validation-feedback">
+                        <span class="error-text">Maksimum sınıra ulaştınız!</span>
+                        <span class="char-count">0/50</span>
+                    </div>
                 </div>
+
                 <div class="form-group">
                     <label class="form-label">Şifre Tekrar</label>
-                    <input type="password" name="confirm_password" class="form-input" placeholder="••••••••" max_length = 50 required>
+                    <div class="input-wrapper">
+                        <input type="password" name="confirm_password" class="form-input validate-input" placeholder="••••••••" maxlength = 50 required>
+                    </div>
+                    <div class="validation-feedback">
+                        <span class="error-text">Maksimum sınıra ulaştınız!</span>
+                        <span class="char-count">0/50</span>
+                    </div>
                 </div>
+
                 <button type="submit" class="submit-button">Kayıt Ol 🎁</button>
             </form>
         </div>
 
-        <!-- Back to Home -->
         <div class="back-home">
             <a href="{% url 'home' %}">
                 ← Ana Sayfaya Dön
@@ -448,21 +595,61 @@
     </div>
 
     <script>
-        function switchTab(tab) {
-            // Tab buttons
+        document.addEventListener('DOMContentLoaded', () => {
+            // Validasyon ve Sayaç Scripti
+            const inputs = document.querySelectorAll('.validate-input');
+
+            inputs.forEach(input => {
+                const max_ = parseInt(input.getAttribute('maxlength'));
+                // HTML yapısına göre feedback div'i input wrapper'ın hemen sonrasındaki kardeştir
+                // Yapı: .input-wrapper > input  ---sonra--> .validation-feedback
+                const wrapper = input.parentElement;
+                const feedbackDiv = wrapper.nextElementSibling; 
+                
+                if(feedbackDiv) {
+                    const charCountSpan = feedbackDiv.querySelector('.char-count');
+                    const errorSpan = feedbackDiv.querySelector('.error-text');
+
+                    // Başlangıç kontrolü
+                    updateFeedback(input, max_, charCountSpan, errorSpan);
+
+                    // Input olayı
+                    input.addEventListener('input', () => {
+                        updateFeedback(input, max_, charCountSpan, errorSpan);
+                    });
+                }
+            });
+
+            function updateFeedback(input, max_, countSpan, errorSpan) {
+                const currentLength = input.value.length;
+                
+                if(countSpan) countSpan.textContent = `${currentLength}/${max_}`;
+
+                if (currentLength >= max_) {
+                    if(errorSpan) {
+                        errorSpan.textContent = "Maksimum sınıra ulaştınız!";
+                        errorSpan.classList.add('visible'); // CSS'te display:block yapar
+                    }
+                    input.classList.add('input-error'); // Çerçeve rengi değişir
+                    if(countSpan) countSpan.style.color = '#cc0000';
+                } else {
+                    if(errorSpan) errorSpan.classList.remove('visible');
+                    input.classList.remove('input-error');
+                    if(countSpan) countSpan.style.color = '#666';
+                }
+            }
+        });
+
+        // Tab Değiştirme Fonksiyonu
+        function switchTab(tab, event) {
             const buttons = document.querySelectorAll('.tab-button');
             buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if (event && event.currentTarget) event.currentTarget.classList.add('active');
+            else if (event && event.target) event.target.classList.add('active');
 
-            // Forms
             const forms = document.querySelectorAll('.form-container');
             forms.forEach(form => form.classList.remove('active'));
-            
-            if (tab === 'login') {
-                document.getElementById('login-form').classList.add('active');
-            } else {
-                document.getElementById('signup-form').classList.add('active');
-            }
+            document.getElementById(tab + '-form').classList.add('active');
         }
     </script>
 </body>
