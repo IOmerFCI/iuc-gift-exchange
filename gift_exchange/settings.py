@@ -106,12 +106,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # settings.py en altı
 
-# settings.py
+# 📧 E-POSTA AYARLARI (Port 587 - TLS)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465          # SSL Portu
-EMAIL_USE_TLS = False     # TLS Kapalı
-EMAIL_USE_SSL = True      # SSL Açık
+EMAIL_PORT = 587          # Render için en açık kapı budur
+EMAIL_USE_TLS = True      # TLS MUTLAKA True olmalı
+EMAIL_USE_SSL = False     # SSL MUTLAKA False olmalı (465 ile karışmasın)
 EMAIL_HOST_USER = os.getenv('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
-EMAIL_TIMEOUT = 30        # 30 saniye bekle, cevap yoksa hata ver
+EMAIL_TIMEOUT = 30        # 30 saniye sabret
