@@ -58,23 +58,33 @@ TEMPLATES = [
 WSGI_APPLICATION = 'gift_exchange.wsgi.application'
 
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+# ---------------------------------------------------------
+# 🗄️ VERİTABANI AYARLARI (RENDER & LOCAL POSTGRESQL)
+# ---------------------------------------------------------
 
-# Optional: local sqlite override
-if os.environ.get('USE_SQLITE') == '1':
+# 1. Durum: Render Sunucusu (DATABASE_URL var mı?)
+if os.environ.get("DATABASE_URL"):
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+        'default': dj_database_url.config(
+            default=os.environ.get("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True
+        )
     }
 
+# 2. Durum: Senin Bilgisayarın (Lokal PostgreSQL)
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            # 👇 AŞAĞIDAKİLERİ KENDİ pgAdmin BİLGİLERİNE GÖRE DOLDUR! 👇
+            'NAME': 'postgres',       # pgAdmin'deki veritabanı adın (genelde postgres'tir veya yeni açtıysan odur)
+            'USER': 'postgres',       # Kullanıcı adın (genelde postgres)
+            'PASSWORD': '12345',      # pgAdmin'e girerken yazdığın şifre
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 # Password validators
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
