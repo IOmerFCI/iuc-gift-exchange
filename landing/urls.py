@@ -2,23 +2,23 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # --- Sayfalar ---
+    # Anasayfa
     path('', views.home_view, name='home'),
-    
-    # Mevcut auth sayfası
+
+    # Arkadaşının eklediği Auth sayfası
     path('auth/', views.auth_page_view, name='auth_page'), 
-    
-    # --- EKLENEN KURTARICI SATIRLAR (Hata bunlardan dolayı çıkıyor) ---
-    # HTML dosyası 'register' ismini aradığında da aynı sayfayı açsın:
+
+    # --- SİLİNEN KURTARICI SATIRLAR (Bunları geri ekliyoruz) ---
+    # HTML 'register' dediğinde buraya gelsin:
     path('kayit-ol/', views.auth_page_view, name='register'),
-    
-    # HTML dosyası 'login' ismini aradığında da aynı sayfayı açsın:
+
+    # HTML 'login' dediğinde buraya gelsin:
     path('giris-yap/', views.auth_page_view, name='login'),
-    # ------------------------------------------------------------------
+    # -----------------------------------------------------------
 
     path('tercihler/', views.preferences_view, name='preferences'),
 
-    # --- API Endpoints ---
+    # API Endpoints (Eren'in ekledikleri)
     path('api/auth/resend-code', views.api_resend_code, name='api_resend'),
     path('api/auth/send-verification', views.api_register, name='api_register'),
     path('api/auth/verify-code', views.api_verify_code, name='api_verify'),
