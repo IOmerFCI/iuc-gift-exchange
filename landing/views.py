@@ -340,33 +340,48 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 def debug_mail_view(request):
-    # 1. Ayarları Ekrana Bas (Şifreyi gizleyerek)
-    password_durumu = "Var" if settings.EMAIL_HOST_PASSWORD else "YOK!"
-    
+    # Ayarları güvenli şekilde al (Yoksa 'Tanımlı Değil' döner, hata vermez)
+    user = getattr(settings, 'EMAIL_HOST_USER', 'Tanımlı Değil')
+    password_durumu = "Var (Gizli)" if getattr(settings, 'EMAIL_HOST_PASSWORD', None) else "YOK! (Env Kontrol Et)"
+    host = getattr(settings, 'EMAIL_HOST', 'Tanımlı Değil')
+    port = getattr(settings, 'EMAIL_PORT', 'Tanımlı Değil')
+    tls = getattr(settings, 'EMAIL_USE_TLS', 'Tanımlı Değil')
+    ssl = getattr(settings, 'EMAIL_USE_SSL', 'Tanımlı Değil') # Hatayı burası veriyordu
+
     info = f"""
     <h1>Mail Debug Ekranı</h1>
-    <p><b>User:</b> {settings.EMAIL_HOST_USER}</p>
+    <p><b>User:</b> {user}</p>
     <p><b>Password Durumu:</b> {password_durumu}</p>
-    <p><b>Host:</b> {settings.EMAIL_HOST}</p>
-    <p><b>Port:</b> {settings.EMAIL_PORT}</p>
-    <p><b>TLS:</b> {settings.EMAIL_USE_TLS}</p>
-    <p><b>SSL:</b> {settings.EMAIL_USE_SSL}</p>
+    <p><b>Host:</b> {host}</p>
+    <p><b>Port:</b> {port}</p>
+    <p><b>TLS:</b> {tls}</p>
+    <p><b>SSL:</b> {ssl}</p>
     <hr>
     <h3>Gönderim Sonucu:</h3>
     """
     
-    # 2. Mail Göndermeyi Dene
+    # Mail Göndermeyi Dene
     try:
         send_mail(
-            'Test Basligi',
-            'Bu Render üzerinden gonderilen test mesajidir.',
-            settings.EMAIL_HOST_USER,
-            ['omerfarukcoskun@ogr.iuc.edu.tr'], # Kendi mail adresin
+            subject='Test Basligi - Render',
+            message='Bu Render üzerinden gonderilen test mesajidir. Eger bunu okuyorsan sistem calisiyor demektir.',
+            from_email=user,
+            recipient_list=['omerfarukcoskun@ogr.iuc.edu.tr'], # Kendi mailin
             fail_silently=False,
         )
-        result = "<h2 style='color:green'>✅ BAŞARILI! Mail gitti.</h2>"
+        result = "<h2 style='color:green'>✅ BAŞARILI! Mail gitti.</h2><p>Lütfen gelen kutunu ve spam klasörünü kontrol et.</p>"
     except Exception as e:
-        # Hatayı ekrana kırmızı yaz
-        result = f"<h2 style='color:red'>❌ HATA: {e}</h2><p>Hata Türü: {type(e).__name__}</p>"
+        # Hatayı ekrana detaylı bas
+        result = f"""
+        <h2 style='color:red'>❌ HATA OLUŞTU</h2>
+        <p><b>Hata Mesajı:</b> {e}</p>
+        <p><b>Hata Türü:</b> {type(e).__name__}</p>
+        <br>
+        <h4>Olası Sebepler:</h4>
+        <ul>
+            <li><b>SMTPAuthenticationError:</b> Şifren yanlıştır. Normal Gmail şifresini değil, <b>Uygulama Şifresini (App Password)</b> kullanmalısın.</li>
+            <li><b>TimeoutError:</b> Render sunucusu Gmail'e ulaşamıyor (Nadir olur).</li>
+        </ul>
+        """
 
     return HttpResponse(info + result)
