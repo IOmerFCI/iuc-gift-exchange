@@ -369,13 +369,13 @@
 
 
         .verify-card {
-            display: none; /* Varsayılan gizli */
+            display: none !important; /* Varsayılan gizli */
             text-align: center;
-            animation: slideIn 0.5s ease-out;
         }
 
         .verify-card.active {
-            display: block;
+            display: block !important; /* Aktif olunca göster */
+            animation: fadeIn 0.4s ease;
         }
 
         .verify-icon {
@@ -547,11 +547,11 @@
             </div>
 
             <div class="tab-buttons">
-                <button class="tab-button active" onclick="switchTab('login', event)">Giriş Yap</button>
-                <button class="tab-button" onclick="switchTab('signup', event)">Kayıt Ol</button>
+                <button class="tab-button" onclick="switchTab('login', event)">Giriş Yap</button>
+                <button class="tab-button active" onclick="switchTab('signup', event)">Kayıt Ol</button>
             </div>
             
-            <div id="login-form" class="form-container active">
+            <div id="login-form" class="form-container">
                 <form onsubmit="handleLogin(event)">
                     <div class="form-group">
                         <label class="form-label">E-posta</label>
@@ -574,7 +574,7 @@
                 </form>
             </div>
 
-            <div id="signup-form" class="form-container">
+            <div id="signup-form" class="form-container active">
                 <form onsubmit="handleRegister(event)">
                     <div class="form-group">
                         <label class="form-label">Ad Soyad</label>
@@ -611,27 +611,28 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="submit-button" id="regBtn">Kayıt Ol & Doğrula ➡️</button>
+                    <button type="submit" class="submit-button" id="regBtn">Kayıt Ol ➡️</button>
                 </form>
             </div>
         </div>
 
         <div id="verify-card" class="verify-card">
             <div class="verify-icon">📩</div>
-            <h2 class="auth-title" style="font-size: 24px;">Kodu Girin</h2>
-            <p class="auth-subtitle">
-                <span id="verify-email-display" style="color: var(--accent); font-weight: bold;"></span> adresine kodu gönderdik.
+            <h2 class="auth-title" style="font-size: 24px;">E-postanı Doğrula</h2>
+            <p class="auth-subtitle" style="margin-bottom: 25px;">
+                <span id="verify-email-display" style="color: var(--accent); font-weight: bold;"></span> adresine 6 haneli doğrulama kodu gönderdik.
             </p>
 
             <div id="resend-msg" class="alert alert-success" style="display:none;">
                 ✅ Yeni kod gönderildi!
             </div>
 
-            <div class="code-input-container">
-                <input type="text" id="verifyCode" class="big-code-input" placeholder="000000" maxlength="6">
+            <div class="form-group">
+                <label class="form-label">Doğrulama Kodu</label>
+                <input type="text" id="verifyCode" class="form-input" style="text-align: center; font-size: 24px; letter-spacing: 10px; font-family: 'Courier New', monospace; font-weight: bold; padding: 16px;" placeholder="000000" maxlength="6" required>
             </div>
 
-            <button onclick="handleVerify()" class="submit-button" id="verifyBtn">Doğrula ve Tamamla ✅</button>
+            <button onclick="handleVerify()" class="submit-button" id="verifyBtn">Doğrula ✅</button>
             
             <button onclick="handleResend()" class="resend-link">🔄 Kodu Tekrar Gönder</button>
             
@@ -704,13 +705,21 @@
                     currentEmail = data.email;
                     document.getElementById('verify-email-display').textContent = currentEmail;
                     
-                    // DÜZELTME BURADA: display özelliğini doğrudan değiştiriyoruz
-                    document.getElementById('main-auth-flow').style.display = 'none';
-                    document.getElementById('main-back-link').style.display = 'none';
-                    
+                    // Ana formu gizle
+                    const mainFlow = document.getElementById('main-auth-flow');
+                    const mainLink = document.getElementById('main-back-link');
                     const verifyCard = document.getElementById('verify-card');
-                    verifyCard.style.display = 'block'; // Inline style'ı ezmek için
-                    verifyCard.classList.add('active'); // Animasyon için
+                    
+                    mainFlow.style.display = 'none';
+                    mainLink.style.display = 'none';
+                    
+                    // Doğrulama kartını göster
+                    verifyCard.classList.add('active');
+                    
+                    // Input'a focus ver
+                    setTimeout(() => {
+                        document.getElementById('verifyCode').focus();
+                    }, 100);
                     
                     document.getElementById('global-message').style.display = 'none';
                 } else {
@@ -720,7 +729,7 @@
                 showMessage("Sunucu hatası veya bağlantı sorunu.", 'error');
                 console.error(err);
             } finally {
-                btn.innerHTML = "Kayıt Ol & Doğrula ➡️";
+                btn.innerHTML = "Kayıt Ol ➡️";
                 btn.disabled = false;
             }
         }
@@ -747,11 +756,15 @@
                 const result = await res.json();
 
                 if (result.success) {
-                    showMessage("Başarılı! Yönlendiriliyorsunuz...", 'success');
-                    window.location.href = "/tercihler/";
+                    showMessage("✅ Doğrulama başarılı! Yönlendiriliyorsunuz...", 'success');
+                    
+                    // Doğrulama başarılı, kullanıcı otomatik login oldu, tercihler sayfasına yönlendir
+                    setTimeout(() => {
+                        window.location.href = "/tercihler/";
+                    }, 1500);
                 } else {
                     showMessage(result.message, 'error');
-                    btn.innerHTML = "Doğrula ve Tamamla ✅";
+                    btn.innerHTML = "Doğrula ✅";
                     btn.disabled = false;
                 }
             } catch (err) {

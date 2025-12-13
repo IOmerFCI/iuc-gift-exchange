@@ -91,15 +91,11 @@ if os.environ.get("DATABASE_URL"):
         )
     }
 else:
-    # Local bilgisayarında çalışırken burası çalışır
+    # Local bilgisayarında çalışırken burası çalışır (SQLite)
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'postgres',
-            'USER': 'postgres',
-            'PASSWORD': '12345', # Kendi yerel şifren
-            'HOST': 'localhost',
-            'PORT': '5432',
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 

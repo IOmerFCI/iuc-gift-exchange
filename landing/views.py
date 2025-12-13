@@ -81,8 +81,8 @@ def api_register(request):
                 user.save()
 
                 # Profil oluştur
-                if not hasattr(user, 'profile'):
-                    Profile.objects.create(user=user, phone=form.cleaned_data.get('phone'))
+                phone = form.cleaned_data.get('phone', '')
+                Profile.objects.get_or_create(user=user, defaults={'phone': phone})
 
                 # 2. Kod üret ve kaydet
                 code = EmailVerification.generate_code()
@@ -101,7 +101,7 @@ def api_register(request):
                     return JsonResponse({'success': True, 'message': 'Kod gönderildi'})
                 except Exception as e:
                     user.delete()
-                    return JsonResponse({'success': False, 'message': 'Mail gönderilemedi.'}, status=500)
+                    return JsonResponse({'success': False, 'message': f'Mail gönderilemedi: {str(e)}'}, status=500)
             
             else:
                 # Form hatalarını topla (İlk hatayı döndür)
@@ -110,6 +110,8 @@ def api_register(request):
 
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'message': 'Geçersiz veri formatı'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Sunucu hatası: {str(e)}'}, status=500)
 
     return JsonResponse({'message': 'Method not allowed'}, status=405)
 
