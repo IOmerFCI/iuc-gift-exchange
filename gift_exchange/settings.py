@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'gift_exchange.wsgi.application'
 # 🗄️ VERİTABANI AYARLARI (SUPABASE & LOCAL)
 # ---------------------------------------------------------
 
-# Render'a eklediğimiz DATABASE_URL varsa onu kullanır (Supabase)
+# DATABASE_URL varsa Supabase kullan, yoksa SQLite (local geliştirme için)
 if os.environ.get("DATABASE_URL"):
     DATABASES = {
         'default': dj_database_url.config(
@@ -91,15 +91,11 @@ if os.environ.get("DATABASE_URL"):
         )
     }
 else:
-    # Local bilgisayarında çalışırken burası çalışır
+    # Local bilgisayarında SQLite kullan (Kurulum gerektirmez)
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'postgres',
-            'USER': 'postgres',
-            'PASSWORD': '12345', # Kendi yerel şifren
-            'HOST': 'localhost',
-            'PORT': '5432',
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
